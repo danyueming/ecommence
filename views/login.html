@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head lang="zh-cn">
+    <meta  charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" href="/stylesheets/bootstrap.css" />
+    <link rel="stylesheet" href="/stylesheets/jquery.mCustomScrollbar.css"/>
+    <link rel="stylesheet" href="/stylesheets/flat-ui.css"/>
+    <link rel='stylesheet' href='/stylesheets/style1.css' />
+    <LINK rel="Bookmark" href="/images/defaultPhoto.png" />
+    <LINK rel="Shortcut Icon" href="/images/defaultPhoto.png" />
+    <script src="/javascripts/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/javascripts/jquery-2.1.1.min.js"></script>
+</head>
+<body style="font-family: '幼圆'">
+<%=title%>
+<form action="#" method="post" role="form">
+<div class="container">
+    <div class="login">
+        <div class="login-screen">
+            <div class="login-icon">
+                <img src="images/github-256-black.png" alt="在线系统" title="在线系统" width="200px" height="200px"/>
+                <h4>欢迎使用 <small>在线系统</small></h4>
+            </div>
+
+    <div class="login-form">
+        <div class="control-group">
+
+            <input type="text" name="username" placeholder="账号" class="login-field" id="username" />
+                <label class="login-field-icon fui-man-16" for="login-name"></label>
+        </div>
+        <div class="control-group">
+            <input name="password" id="password"   class="login-field" placeholder="密码" type="password" />
+                <label class="login-field-icon fui-lock-16" for="login-pass"></label>
+        </div>
+                <a class="btn btn-primary btn-large btn-block" id="loginButton" onclick="login()">登录</a>
+                <a class="login-link" href="register" style="color: red" >注 册</a>
+      </div>
+      </div>
+
+            </div>
+        </div>
+</form>
+
+<script type="text/javascript">
+    function login(){
+        var username = $('#username').val(),password = $('#password').val();
+        var data = { "uname": username, "upwd":password};
+        $.ajax({
+            url:'/login',
+            type:'POST',
+            data:data,
+            success:function(data,status){
+                if(status == 'success'){
+                    location.href='home';
+                }
+            },
+            error:function(data,status){
+                if(status == "error"){
+                    location.href='login'
+                }
+            }
+        });
+    }
+
+
+</script>
+</body>
+</html>

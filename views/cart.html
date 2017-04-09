@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/stylesheets/bootstrap.css">
+    <script src="/javascripts/jquery-2.1.1.min.js" type="text/javascript"></script>
+    <script src="/javascripts/bootstrap.min.js" type="text/javascript"></script>
+
+
+
+    <style type="text/css">
+        body{
+            font-size: 20px;
+        }
+        .cart-heading{
+            height: 40px;
+            background-color: #EFEDED;,
+            font-size: large;
+            color: blue;
+            padding-top: 10px;
+        }
+        .cart-body{
+            background-color: #F7F7F7;
+        }
+        .cart-body ul li {
+            list-style-type: none;//无标记
+            margin-left: -30px;
+            width: 1150px;
+        }
+        .cart-body ul li div{
+            float: left;
+            height: 80px;
+        }
+        .li-checkbox input{
+            margin: 20px 5px 0 0;
+        }
+        .li-img a img{
+            width: 50px;
+            height: 60px;
+        }
+        .li-content{
+            margin: 20px 0 0 30px;
+            width: 175px;
+        }
+        .li-price{
+            margin: 20px 0 0 60px;
+            width: 120px;
+
+        }
+        .li-quantity{
+            margin: 20px 0 0 80px;
+            width: 100px;
+        }
+        .li-total{
+            margin: 20px 0 0 110px;
+            width: 100px;
+        }
+        .li-del{
+            margin: 20px 0 0 200px;
+            width: 60px;
+        }
+        .li-img{
+            margin: 0 0 0 20px;
+        }
+        .cart-foot{
+            margin: 0 20px  0 10px;
+            cursor: pointer;
+            float: right;
+            height: 60px;
+            width:600px;
+            border: 1px solid #c8c8c8;
+            background-color: #eaeaea;
+            background-image:linear-gradient(RGB(241,241,241),RGB(226,226,226));
+            z-index: 8;
+        }
+    </style>
+</head>
+<body>
+<div style="margin:50px auto;width: 1200px;">
+    <div>
+        <div>
+            <div style="float: right">
+                <a class="btn  btn-xs btn-success" href="/home" style="margin-right: 35px;">商品页</a>
+                <a class="btn btn-xs btn-info" href="/logout">退 出</a>
+            </div>
+            <h2>购物车</h2>
+            <hr>
+        </div>
+
+        <div class="cart-heading">
+
+            <span style="margin-right: 100px;">
+                        <input id="CheckAll" class="li-checkbox" type="checkbox" /> 全选
+                    </span>
+            <span style="margin-right: 200px;">商品</span>
+            <span style="margin-right: 180px;">价格</span>
+            <span style="margin-right: 180px;">数量</span>
+            <span style="margin-right: 180px;">小计</span>
+            <span style="padding-right: 1px;">操作</span>
+        </div>
+        <div class="cart-body">
+            <ul >
+                <%for(var i in carts){ if(!carts[i].cId)continue%>
+                <li class="parent1">
+                    <div class="li-checkbox">
+                        <input id="<%=carts[i]._id%>" data-index="<%=i%>"  data-price="<%=carts[i].cPrice%>"
+                               name="chkItem"  class="li-checkbox" type="checkbox" />
+                    </div>
+                    <div class="li-img">
+                        <a >
+                            <img class="li-img a img" src="/<%=carts[i].cImgSrc%>">
+                        </a>
+                    </div>
+
+                    <div class="li-content">
+                        <a ><%=carts[i].cName%></a>
+                    </div>
+                    <div class="li-price" >
+                        <span><%=carts[i].cPrice%></span>
+                    </div>
+                    <div class="li-quantity">
+                        <a data-type="add" href="javascript:void(0);" class="btn btn-default btn-xs ">+</a>
+                        <input id="Q<%=i%>" class="quantity" style="width: 40px;"  type="text"
+                               value="<%=carts[i].cQuantity%>"/>
+                        <a data-type='subtr' style=" margin: -60px 0 0 100px;" href="javascript:void(0);"
+                           class="btn btn-default btn-xs">-</a>
+                    </div>
+
+                    <div class="li-total" >
+                        <span  style="margin-left: 40px" class="ctotal" ><%=carts[i].cQuantity*carts[i].cPrice%></span>
+                    </div>
+                    <div class="li-del" >
+                        <a id="delete" href="/delete/<%=carts[i]._id%>"  class="btn btn-primary btn-xs">删除</a>
+                    </div>
+
+                </li>
+                <%}%>
+
+            </ul>
+
+  </div>
+        <div id="foot" class="cart-foot">
+                <div class="fr selected" id="selected" style=" line-height: 48px;height: 48px;">
+                    已选商品<span id="selectedTotal" style="color: red;font-size: 25px">&nbsp;0&nbsp;</span>件
+                    &nbsp;&nbsp;总计：<span class="money" style="color: red;font-size: 25px">￥0.00</span>
+                    <input type="button" style="width: 100px;float:right;"  class="btn btn-success"
+                           onclick=" Clearing();" value="结 算" />
+                </div>
+        </div>
+
+ </div>
+
+</div>
+<script type="text/javascript">
+    var checkAll=$("#CheckAll");// 全选框,id=Check的input
+    var selectInput=$("input.li-checkbox");//勾选框
+    var selecteTotal=$("#selectedTotal");//已选商品
+    var needMoney=$("span.money");//总计
+    var deletes=$("#delete");
+
+
+    for(k=0;selectInput.length;k++){
+    deletes.click(function(){
+        if(selecteTotal.html!=0){
+            var  con = confirm('确定删除所选商品吗？'); //弹出确认框
+            if (con){
+                $(this).parents('.parent1').remove();//为什么只执行一次
+                //window.location.reload();
+            }else{
+                alert('请选择商品！');
+            }
+        }
+        getTotal();
+    });
+    }
+
+ checkAll.click(function(){//全选
+        if(this.checked){
+         //   console.log((checkAll.checked);//undefine，checkAll.checked不是一个布尔值
+
+            for (var j = 0; j < selectInput.length; j++) {//另解selectInput.prop("checked", true);
+                selectInput[j].checked =true ;
+            }
+        }if(!this.checked) {
+            selectInput.prop("checked", false);
+        }
+
+    });
+
+
+  for(var j = 0; j< selectInput.length; j++ ) {
+
+      selectInput[j].onclick= function(){//this其实是一个Html 元素
+                  if (!this.checked) //只要有一个未勾选，则取消全选框的选中状态
+                  {  selectInput[0].checked =false ;}
+                  getTotal();
+              }
+  }
+
+
+function getTotal(){
+    var selected = 0, price = 0;
+    var commodity=$("li");
+    var number=$("input.quantity");
+
+    for(var i=0;i<commodity.length;i++){
+        //console.log(selectInput[i+1].checked);
+        if(selectInput[i+1].checked){
+            selected+=1;
+            price+=parseFloat($("span.ctotal")[i].innerHTML);
+
+        }
+    }
+    selecteTotal.html(selected);
+    needMoney.html(price);
+}
+
+
+</script>
+
+</body>
+</html>
